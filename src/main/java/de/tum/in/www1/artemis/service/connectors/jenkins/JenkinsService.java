@@ -216,7 +216,12 @@ public class JenkinsService extends AbstractContinuousIntegrationService {
         catch (Exception emAll) {
             log.warn(emAll.getMessage());
             // in case of an error message, we assume the project exist
-            return "The project already exists on the Continuous Integration Server. Please choose a different title and short name!";
+            if (jenkinsServer == null) {
+                return "jenkinsServer is ; " + "The project already exists on the Continuous Integration Server. Please choose a different title and short name!"
+                        + "Extra message: log.warn: " + emAll.getMessage() + "Project key= " + projectKey + "Project name= " + projectName;
+            }
+            return "The project already exists on the Continuous Integration Server. Please choose a different title and short name!" + "Extra message: log.warn: "
+                    + emAll.getMessage() + "Project key= " + projectKey + "Project name= " + projectName;
         }
     }
 
@@ -251,11 +256,23 @@ public class JenkinsService extends AbstractContinuousIntegrationService {
     @Override
     public void createProjectForExercise(ProgrammingExercise programmingExercise) throws ContinuousIntegrationException {
         try {
-            jenkinsServer.createFolder(programmingExercise.getProjectKey(), useCrumb);
+            log.warn("========================================================================");
+            log.warn("Creating Project For Excercise.");
+            log.info("UseCrumb: ");
+            log.info(String.valueOf(useCrumb));
+            if (useCrumb) {
+                log.info("creating folder with useCrumb.");
+                jenkinsServer.createFolder(programmingExercise.getProjectKey(), useCrumb);
+            }
+            else {
+                log.info("creating folder without useCrumb");
+                jenkinsServer.createFolder(programmingExercise.getProjectKey());
+            }
+            log.info("Project created successfully.");
         }
         catch (IOException e) {
             log.error(e.getMessage(), e);
-            throw new JenkinsException("Error creating folder for exercise " + programmingExercise, e);
+            throw new JenkinsException("Error creating folder for exercise " + programmingExercise + "useCrumb: " + String.valueOf(useCrumb), e);
         }
     }
 
@@ -263,4 +280,5 @@ public class JenkinsService extends AbstractContinuousIntegrationService {
     public CheckoutDirectoriesDTO getCheckoutDirectories(ProgrammingLanguage programmingLanguage, boolean checkoutSolution) {
         throw new UnsupportedOperationException("Method not implemented, consult the build plans in Jenkins for more information on the checkout directories.");
     }
+
 }

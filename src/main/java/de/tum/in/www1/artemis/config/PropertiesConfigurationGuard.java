@@ -22,6 +22,8 @@ public class PropertiesConfigurationGuard implements InitializingBean {
      * Checks if the info.operatorName value is set in the configuration ymls, and exits the application if not.
      */
     public void afterPropertiesSet() {
+        log.info("==================================================================");
+        log.info("Operator name: {}", this.operatorName);
         if (this.operatorName == null || this.operatorName.isEmpty()) {
             log.error(
                     "The name of the operator (University) is not configured in the application-prod.yml! It is needed to be displayed in the /about page, and for the telemetry service.");

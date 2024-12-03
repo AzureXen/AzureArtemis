@@ -50,13 +50,21 @@ public class JenkinsAuthorizationInterceptor implements ClientHttpRequestInterce
     @Override
     public ClientHttpResponse intercept(HttpRequest request, @NotNull byte[] body, @NotNull ClientHttpRequestExecution execution) throws IOException {
         request.getHeaders().setBasicAuth(username, password);
+        log.error("====================================NOT AN ERROR===============================");
+        log.info("intercepting authorization. Checking useCrumb");
         if (useCrumb) {
+            log.info("useCrumb is True, setting crumb");
             setCrumb(request.getHeaders());
+        }
+        else {
+            log.info("useCrumb is False");
         }
         return execution.execute(request, body);
     }
 
     private void setCrumb(final HttpHeaders headersToAuthenticate) {
+        log.info("========================================================================");
+        log.info("Getting Jenkins Crumb from Crumb Issuer.");
         final var headers = new HttpHeaders();
         headers.setBasicAuth(username, password);
         final var entity = new HttpEntity<>(headers);

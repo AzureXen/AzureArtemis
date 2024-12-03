@@ -19,9 +19,6 @@ services:
             - "5005"
         env_file:
             - ./artemis/config/dev.env
-        depends_on:
-            mysql:
-                condition: service_healthy
     mysql:
         extends:
             file: ./mysql.yml

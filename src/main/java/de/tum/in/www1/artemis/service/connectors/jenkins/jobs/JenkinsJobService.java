@@ -70,10 +70,13 @@ public class JenkinsJobService {
      */
     public FolderJob getFolderJob(String folderName) {
         try {
+            log.info("==========================================");
+            log.info("Getting Folder Job");
             final var job = jenkinsServer.getJob(folderName);
             if (job == null) {
                 return null;
             }
+            log.info("Found Folder Job: {}", job);
             return jenkinsServer.getFolderJob(job).orElse(null);
         }
         catch (IOException e) {
@@ -134,21 +137,36 @@ public class JenkinsJobService {
      */
     public void createJobInFolder(Document jobConfig, String folderName, String jobName) {
         try {
+            log.info("Getting Folder Job with name: " + folderName + " and job name : " + jobName);
             var folder = getFolderJob(folderName);
+            log.info("Getting Folder Job Successfully");
             if (folder == null) {
+                log.error("===================EXCEPTION SPOT 1===================");
                 throw new JenkinsException("Cannot create job " + jobName + " because the folder " + folderName + " does not exist.");
             }
-
+            log.info("The folder is not null;");
             var existingJob = jenkinsServer.getJob(folder, jobName);
             if (existingJob != null) {
+                log.error("===================EXCEPTION SPOT 2===================");
                 log.info("Build Plan {} already exists. Skipping creation of job.", jobName);
                 return;
             }
+            log.info("it is not an existing job(good)");
 
+            log.info("setting up configString");
             String configString = JenkinsXmlFileUtils.writeToString(jobConfig);
+            log.info("configString setup successfully");
+
+            log.info("creating job");
+            log.info("useCrumb:");
+            log.info(String.valueOf(useCrumb));
+            log.info("Job name: {}", jobName);
+            log.info("ConfigString: {}", configString);
             jenkinsServer.createJob(folder, jobName, configString, useCrumb);
+            log.info("created job successfully");
         }
         catch (IOException | TransformerException e) {
+            log.error("===================EXCEPTION SPOT 3===================");
             log.error(e.getMessage(), e);
             throw new JenkinsException(e.getMessage(), e);
         }

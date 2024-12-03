@@ -9,7 +9,7 @@ jenkins:
     # see https://wiki.jenkins.io/display/JENKINS/Remote+access+API --> CSRF Protection
     # The default value for this parameter is true, so if it is not specified, crumb protection will be active.
     # If you experience problems using crumb, you can deactivate it here.
-    use-crumb: true
+    use-crumb: ${USE_CRUMB}
 
     # The following (optional) parameter allows to enable the use of pseudonyms.
     # If activated, the user's first and last name are not transferred to jenkins.
@@ -23,6 +23,6 @@ jenkins:
     # will still be constructed from the ones defined in application-artemis.yml.
     internal-urls:
         # Override the ci url used e.g. in Gitlab as the webhook url.
-        ci-url: # http://jenkins:8080
+        ci-url: ${JENKINS_CI_URL:http://jenkins:8080}
         # Overrides the vcs url used e.g. as the Gitlab checkout url in Jenkins build plans
-        vcs-url: # http://gitlab:80
+        vcs-url: ${JENKINS_VCS_URL:http://172.17.0.1:8080}

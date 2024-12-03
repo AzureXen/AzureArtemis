@@ -21,7 +21,8 @@ artemis:
         enabled: true # Disable sending any telemetry information to the telemetry service by setting this to false
         sendAdminDetails: true # Include personal identifiable information of the admin, including email and name in the telemetry data
         destination: telemetry.artemis.cit.tum.de
-
+    version-control:
+        url: ${ARTEMIS_SERVER_URL:http://172.17.0.1:8080}
 spring:
     devtools:
         restart:
@@ -30,9 +31,11 @@ spring:
             enabled: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://localhost:3306/Artemis?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC
-        username: root
-        password:
+
+        url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/artemis?useUnicode=true&characterEncoding=utf8&useSSL=true&useLegacyDatetimeCode=false&serverTimezone=UTC}
+        username: ${SPRING_DATASOURCE_USERNAME:root}
+        password: ${SPRING_DATASOURCE_PASSWORD:}
+
         hikari:
             poolName: Hikari
             auto-commit: false
@@ -76,6 +79,7 @@ server:
         enabled: true
         mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json,image/svg+xml
         min-response-size: 1024
+    url: ${ARTEMIS_SERVER_URL:http://172.17.0.1:8080}
 
 # ===================================================================
 # JHipster specific properties
@@ -129,6 +133,6 @@ info:
     # Specifies whether text assessment analytics service (TextAssessmentEventResource) is enabled/disabled
     # default value set to false in production
     text-assessment-analytics-enabled: false
-    operatorName: # Must be set before starting the application in production. Shown in the about us page and sent to the telemetry service (e.g. university or school)
-    operatorAdminName: # Can be set before starting the application in production. Shown in the about us page and used by the telemetry service
-    contact: # The admins contact email address, shown in the about us page, and sent to the telemetry service
+    operatorName: 'Pham Dan Minh' # Must be set before starting the application in production. Shown in the about us page and sent to the telemetry service (e.g. university or school)
+    operatorAdminName: 'Pham Dan Minh' # Can be set before starting the application in production. Shown in the about us page and used by the telemetry service
+    contact: 'Pham Dan Minh' # The admins contact email address, shown in the about us page, and sent to the telemetry service

@@ -35,9 +35,16 @@ WORKDIR /opt/artemis
 COPY gradlew gradlew.bat ./
 COPY build.gradle gradle.properties settings.gradle ./
 COPY gradle gradle/
+
+RUN chmod +x gradlew && \
+    sed -i 's/\r$//' gradlew
+
 # copy npm related files and install node modules
 # (from https://stackoverflow.com/questions/63961934/how-to-use-docker-build-cache-when-version-bumping-a-react-app)
 COPY package.json package-lock.json ./
+
+RUN ls -la
+
 RUN \
   # Mount global cache for Gradle (project cache in /opt/artemis/.gradle doesn't seem to be populated)
   --mount=type=cache,target=/root/.gradle/caches \
@@ -52,6 +59,9 @@ RUN \
 
 # so far just using the .dockerignore to define what isn't necessary here
 COPY . .
+
+RUN chmod +x gradlew && \
+    sed -i 's/\r$//' gradlew
 
 RUN \
   # Mount global cache for Gradle (project cache in /opt/artemis/.gradle doesn't seem to be populated)
